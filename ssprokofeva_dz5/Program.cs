@@ -35,25 +35,20 @@ namespace ssprokofeva_dz5
         static void Task3()
         {
             Console.WriteLine("Выполнение задания 3...");
-            // Создаем очередь бабушек
             var babushkas = new Queue<Babushka>();
 
-            // Создаем стек больниц
             var hospitals = new Stack<Hospital>();
 
-            // Пример создания нескольких бабушек
-            babushkas.Enqueue(new Babushka("Мария", 80, new List<string> { "Грипп", "Артрит" }, new List<string> { "Парацетамол", "Ибупрофен" }));
+            babushkas.Enqueue(new Babushka("Надежда", 80, new List<string> { "Грипп", "Артрит" }, new List<string> { "Парацетамол", "Ибупрофен" }));
             babushkas.Enqueue(new Babushka("Анна", 75, new List<string> { "Гипертония", "Диабет" }, new List<string> { "Эналаприл", "Метформин" }));
-            babushkas.Enqueue(new Babushka("Ольга", 85, new List<string> { "Остеопороз", "Астма" }, new List<string> { "Кальций", "Сальбутамол" }));
+            babushkas.Enqueue(new Babushka("Валентина", 85, new List<string> { "Остеопороз", "Астма" }, new List<string> { "Кальций", "Сальбутамол" }));
             babushkas.Enqueue(new Babushka("Елена", 70, new List<string> { "Бессонница" }, new List<string> { "Мелатонин" }));
-            babushkas.Enqueue(new Babushka("Татьяна", 65, new List<string> { "Простуда" }, new List<string> { "Отхаркивающее средство" }));
+            babushkas.Enqueue(new Babushka("Евгения", 65, new List<string> { "Простуда" }, new List<string> { "Отхаркивающее средство" }));
 
-            // Пример создания нескольких больниц
-            hospitals.Push(new Hospital("Городская больница №1", new List<string> { "Грипп", "Гипертония", "Диабет", "Простуда" }, 100));
+            hospitals.Push(new Hospital("Городская больница", new List<string> { "Грипп", "Гипертония", "Диабет", "Простуда" }, 100));
             hospitals.Push(new Hospital("Клиника здоровья", new List<string> { "Артрит", "Остеопороз", "Астма", "Бессонница" }, 60));
-            hospitals.Push(new Hospital("Медицинский центр", new List<string> { "Гипертония", "Диабет", "Простуда" }, 40));
+            hospitals.Push(new Hospital("Инвитро", new List<string> { "Гипертония", "Диабет", "Простуда" }, 40));
 
-            // Распределение бабушек по больницам
             while (babushkas.Count > 0)
             {
                 var currentBabushka = babushkas.Dequeue();
@@ -76,7 +71,6 @@ namespace ssprokofeva_dz5
                 }
             }
 
-            // Выводим информацию обо всех бабушках и больницах
             PrintAllBabushkas(babushkas);
             PrintAllHospitals(hospitals);
         }
@@ -324,7 +318,7 @@ namespace ssprokofeva_dz5
 
     public class Graph
     {
-        private readonly Dictionary<int, List<int>> _adjList; // Список смежности
+        private readonly Dictionary<int, List<int>> _adjList;
 
         public Graph(int verticesCount)
         {
@@ -338,7 +332,7 @@ namespace ssprokofeva_dz5
         public void AddEdge(int u, int v)
         {
             _adjList[u].Add(v);
-            _adjList[v].Add(u); // Если граф ненаправленный
+            _adjList[v].Add(u); 
         }
 
         public void ShortestPath(int start, int end)
@@ -355,7 +349,7 @@ namespace ssprokofeva_dz5
 
             queue.Enqueue(start);
             visited[start] = true;
-            parent[start] = -1; // Нет родителя у стартовой вершины
+            parent[start] = -1; 
 
             while (queue.Count > 0)
             {
@@ -370,7 +364,7 @@ namespace ssprokofeva_dz5
                         parent[neighbor] = currentVertex;
 
                         if (neighbor == end)
-                        { // Кратчайший путь найден
+                        { 
                             PrintShortestPath(parent, start, end);
                             return;
                         }
