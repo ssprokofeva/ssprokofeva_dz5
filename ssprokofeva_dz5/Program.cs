@@ -7,24 +7,153 @@ using System.Threading.Tasks;
 
 namespace ssprokofeva_dz5
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            Task1();
             Task2();
             Task3();
             Task4();
-            Console.WriteLine("нужно нажать для закрытия окна");
+            Console.WriteLine("Нажмите что угодно для входа");
             Console.ReadKey();
         }
+
+        private static void Task4()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void Task2()
+        {
+            throw new NotImplementedException();
+
+        }
         /// <summary>
-        /// Соствить студента из группы, создать словарь студентов из нашей группы
+        /// про бабушек
         /// </summary>
         /// <returns></returns>
+        static void Task3()
+        {
+            Console.WriteLine("Выполнение задания 3...");
+            // Создаем очередь бабушек
+            var babushkas = new Queue<Babushka>();
+
+            // Создаем стек больниц
+            var hospitals = new Stack<Hospital>();
+
+            // Пример создания нескольких бабушек
+            babushkas.Enqueue(new Babushka("Мария", 80, new List<string> { "Грипп", "Артрит" }, new List<string> { "Парацетамол", "Ибупрофен" }));
+            babushkas.Enqueue(new Babushka("Анна", 75, new List<string> { "Гипертония", "Диабет" }, new List<string> { "Эналаприл", "Метформин" }));
+            babushkas.Enqueue(new Babushka("Ольга", 85, new List<string> { "Остеопороз", "Астма" }, new List<string> { "Кальций", "Сальбутамол" }));
+            babushkas.Enqueue(new Babushka("Елена", 70, new List<string> { "Бессонница" }, new List<string> { "Мелатонин" }));
+            babushkas.Enqueue(new Babushka("Татьяна", 65, new List<string> { "Простуда" }, new List<string> { "Отхаркивающее средство" }));
+
+            // Пример создания нескольких больниц
+            hospitals.Push(new Hospital("Городская больница №1", new List<string> { "Грипп", "Гипертония", "Диабет", "Простуда" }, 100));
+            hospitals.Push(new Hospital("Клиника здоровья", new List<string> { "Артрит", "Остеопороз", "Астма", "Бессонница" }, 60));
+            hospitals.Push(new Hospital("Медицинский центр", new List<string> { "Гипертония", "Диабет", "Простуда" }, 40));
+
+            // Распределение бабушек по больницам
+            while (babushkas.Count > 0)
+            {
+                var currentBabushka = babushkas.Dequeue();
+                bool foundHospital = false;
+
+                foreach (var hospital in hospitals)
+                {
+                    if (hospital.CanAccept(currentBabushka))
+                    {
+                        hospital.Accept(currentBabushka);
+                        Console.WriteLine($"{currentBabushka.Name} поступила в {hospital.Name}");
+                        foundHospital = true;
+                        break;
+                    }
+                }
+
+                if (!foundHospital)
+                {
+                    Console.WriteLine($"{currentBabushka.Name} осталась на улице плакать.");
+                }
+            }
+
+            // Выводим информацию обо всех бабушках и больницах
+            PrintAllBabushkas(babushkas);
+            PrintAllHospitals(hospitals);
+        }
+
+        private static void PrintAllBabushkas(Queue<Babushka> babushkas)
+        {
+            Console.WriteLine("\nСписок всех бабушек:");
+            foreach (var babushka in babushkas)
+            {
+                Console.WriteLine($"Имя: {babushka.Name}, Возраст: {babushka.Age}, Болезни: {string.Join(", ", babushka.Diseases)}, Лекарства: {string.Join(", ", babushka.Medicines)}");
+            }
+        }
+
+        private static void PrintAllHospitals(Stack<Hospital> hospitals)
+        {
+            Console.WriteLine("\nСписок всех больниц:");
+            foreach (var hospital in hospitals)
+            {
+                Console.WriteLine($"Название: {hospital.Name}, Болезни: {string.Join(", ", hospital.TreatedDiseases)}, Вместимость: {hospital.Capacity}, Заполненность: {hospital.Occupancy}%");
+            }
+        }
+    }
+
+    public class Babushka
+    {
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public List<string> Diseases { get; set; }
+        public List<string> Medicines { get; set; }
+
+        public Babushka(string name, int age, List<string> diseases, List<string> medicines)
+        {
+            Name = name;
+            Age = age;
+            Diseases = diseases;
+            Medicines = medicines;
+        }
+    }
+
+    public class Hospital
+    {
+        public string Name { get; set; }
+        public List<string> TreatedDiseases { get; set; }
+        public int Capacity { get; set; }
+        public int Occupancy { get; private set; } = 0;
+
+        public Hospital(string name, List<string> treatedDiseases, int capacity)
+        {
+            Name = name;
+            TreatedDiseases = treatedDiseases;
+            Capacity = capacity;
+        }
+
+        public bool CanAccept(Babushka babushka)
+        {
+            if (Occupancy >= Capacity)
+            {
+                return false;
+            }
+
+            double matchingDiseases = babushka.Diseases.Intersect(TreatedDiseases).Count();
+            double totalDiseases = babushka.Diseases.Count();
+
+            return matchingDiseases / totalDiseases >= 0.5 || totalDiseases == 0;
+        }
+
+        public void Accept(Babushka babushka)
+        {
+            Occupancy++;
+        }
+
+        /// <summary>
+        /// Задание 2: Работа со студентами
+        /// </summary>
         static void Task2()
         {
-            Console.WriteLine("задание 2");
+            Console.WriteLine("Задание 2");
             var students = ReadStudentsFromFile("students.txt");
 
             bool exit = false;
@@ -37,9 +166,9 @@ namespace ssprokofeva_dz5
                 Console.WriteLine("d. Показать всех студентов");
                 Console.WriteLine("e. Выход");
 
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine().ToLower();
 
-                switch (choice.ToLower())
+                switch (choice)
                 {
                     case "a":
                         AddNewStudent(students);
@@ -57,7 +186,7 @@ namespace ssprokofeva_dz5
                         exit = true;
                         break;
                     default:
-                        Console.WriteLine("Неправильный выбор. Попробуйте еще раз.");
+                        Console.WriteLine("Неправильный выбор. Попробуйте снова.");
                         break;
                 }
             }
@@ -99,7 +228,7 @@ namespace ssprokofeva_dz5
             if (studentToDelete != null)
             {
                 students.Remove(studentToDelete);
-                Console.WriteLine($"Удалён студент: {studentToDelete}");
+                Console.WriteLine($"Удален студент: {studentToDelete}");
             }
             else
             {
@@ -151,6 +280,23 @@ namespace ssprokofeva_dz5
 
             return students;
         }
+
+        /// <summary>
+        /// Задание 4: Работа с графами
+        /// </summary>
+        static void Task4()
+        {
+            Console.WriteLine("Задание 4");
+            var graph = new Graph(5); // Создаем граф с 5 вершинами
+            graph.AddEdge(0, 1);
+            graph.AddEdge(0, 2);
+            graph.AddEdge(1, 2);
+            graph.AddEdge(2, 3);
+            graph.AddEdge(3, 4);
+
+            Console.WriteLine("Найти кратчайший путь от вершины 0 до вершины 4:");
+            graph.ShortestPath(0, 4);
+        }
     }
 
     public class Student
@@ -175,5 +321,83 @@ namespace ssprokofeva_dz5
             return $"Студент: {Surname} {Name}, год рождения: {BirthYear}, экзамен: {Exam}, балл: {Score}";
         }
     }
-      
-}
+
+    public class Graph
+    {
+        private readonly Dictionary<int, List<int>> _adjList; // Список смежности
+
+        public Graph(int verticesCount)
+        {
+            _adjList = new Dictionary<int, List<int>>();
+            for (int i = 0; i < verticesCount; ++i)
+            {
+                _adjList[i] = new List<int>();
+            }
+        }
+
+        public void AddEdge(int u, int v)
+        {
+            _adjList[u].Add(v);
+            _adjList[v].Add(u); // Если граф ненаправленный
+        }
+
+        public void ShortestPath(int start, int end)
+        {
+            if (start == end)
+            {
+                Console.WriteLine("Путь найден: " + start);
+                return;
+            }
+
+            bool[] visited = new bool[_adjList.Count];
+            Queue<int> queue = new Queue<int>();
+            Dictionary<int, int> parent = new Dictionary<int, int>();
+
+            queue.Enqueue(start);
+            visited[start] = true;
+            parent[start] = -1; // Нет родителя у стартовой вершины
+
+            while (queue.Count > 0)
+            {
+                int currentVertex = queue.Dequeue();
+
+                foreach (var neighbor in _adjList[currentVertex])
+                {
+                    if (!visited[neighbor])
+                    {
+                        queue.Enqueue(neighbor);
+                        visited[neighbor] = true;
+                        parent[neighbor] = currentVertex;
+
+                        if (neighbor == end)
+                        { // Кратчайший путь найден
+                            PrintShortestPath(parent, start, end);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("Путь не найден");
+        }
+
+        private void PrintShortestPath(Dictionary<int, int> parent, int start, int end)
+        {
+            Stack<int> path = new Stack<int>();
+            int current = end;
+
+            while (current != -1)
+            {
+                path.Push(current);
+                current = parent[current];
+            }
+
+            Console.Write("Кратчайший путь: ");
+            while (path.Count > 0)
+            {
+                Console.Write(path.Pop() + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+}  
